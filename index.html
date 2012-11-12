@@ -3,6 +3,7 @@
     <head>
         <title></title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link rel="stylesheet" href="style.css" />
         <style type="text/css">
             canvas:-webkit-full-screen { max-height: 100%; }
             canvas:-moz-full-screen { max-height: 100%; }
@@ -11,19 +12,45 @@
     <body>
         <canvas width="1024" height="768" id="canvas"></canvas>
         <br />
-        Direction : 
-        <select id="direction">
-            <option value="horizontaldg">Horizontal D => G</option>
-            <option value="horizontalgd">Horizontal G => D</option>
-            <option value="verticalhb">Vertical H => B</option>
-            <option value="verticalbh">Vertical B => H</option>
-        </select>
-        Vitesse : <input type="text" value="5" id="vitesse" />
-        Nombre de particule : <input type="text" value="100" id="nombre" />
-        Taille des particules : <input type="text" value="5" id="taille" />
+        <fieldset>
+            <legend>Configuration générale</legend>
+            <p>
+                Direction : 
+                <select id="direction">
+                    <option value="horizontaldg">Horizontal D => G</option>
+                    <option value="horizontalgd">Horizontal G => D</option>
+                    <option value="verticalhb">Vertical H => B</option>
+                    <option value="verticalbh">Vertical B => H</option>
+                </select>
+
+                Nombre de particule : <input type="text" value="100" id="nombre" class="input-small" />
+                Taille des particules : <input type="text" value="5" id="taille" class="input-small" />
+                <br />
+                <strong>Mode 1 : </strong> Vitesse fixe et alternance de direction.<br />
+                <strong>Mode 2 :</strong> Vitesse aléatoire dans un intervalle de temps aléatoire avec alternance de direction
+            </p>
+        </fieldset>
+        
         <br />
-        Alternance ( en s) : <input type="text" value="0" id="alt" /> 0 = pas d'alternance
-        <input type="button" id="change" value="Appliquer" />
+        <fieldset class="floatedFS">
+            <legend>Mode 1</legend>
+            <p>
+                Vitesse : <input type="text" value="5" id="vitesse" class="input-small" /><br />
+                Alternance de direction ( en s) : <input type="text" value="0" id="alt" class="input-small" /> 0 = pas d'alternance<br />
+                <input type="button" id="goMode1" value="Lancer" />
+            </p>
+        </fieldset>
+        <fieldset class="floatedFS">
+            <legend>Mode 2</legend>
+            <p>
+                Intervalle de vitesse : <input type="text" value="5" id="vitesseint1" class="input-small" /> <input type="text" value="10" id="vitesseint2" class="input-small" /><br />
+                Intervalle de temps : <input type="text" value="5" id="tpsint1" class="input-small" /> <input type="text" value="10" id="tpsint2" class="input-small" /><br />
+                Alternance de direction ( en s) : <input type="text" value="0" id="alt2" class="input-small" /> 0 = pas d'alternance<br />
+                <input type="button" id="goMode2" value="Lancer" />
+            </p>
+        </fieldset>
+        
+        
         <input type="button" id="full" value="Plein écran" />
         
         <script src="fullscreen.js" type="text/javascript"></script>

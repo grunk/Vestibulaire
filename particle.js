@@ -6,22 +6,29 @@
 (function() {
     //Initialisation du canvas
     var canvas      = document.getElementById("canvas");
-    var button      = document.getElementById("change");
+    var button1     = document.getElementById("goMode1");
+    var button2     = document.getElementById("goMode2");
     var btnFull     = document.getElementById("full");
     var ctx         = canvas.getContext("2d");
     var direction   = 'horizontal';
     var taille      = 5;
     var nombre      = 100;
     var vitesse     = 5;
+    var vitesseInt  = new Array();
+    var tempsInt    = new Array();
     var particles   = [];
     var timeElapsed = 0;
+    var timeSpeedElapsed = 0;
     var alternance  = 0;
+    var speedAlternance = 0;
+    var mode        = 1;
 
     //Taille
     var W = 1024; var H = 768;
 
     //Event
-    button.addEventListener("click", change, false);
+    button1.addEventListener("click", function(){initMode(1)}, false);
+    button2.addEventListener("click", function(){initMode(2)}, false);
     btnFull.addEventListener("click", setFullScreen, false);
     if (screenfull.enabled) {
         screenfull.onchange = function() {
@@ -40,26 +47,52 @@
             }
         };
     }
-
+    
+    function initMode(numMode)
+    {
+        mode = numMode;
+        change();
+    }
 
     /**
      * Recréation de nouvelles particules avec les paramètres saisie
      */
     function change()
     {
+        
         direction   = document.getElementById("direction").value;
-        vitesse     = parseInt(document.getElementById("vitesse").value,10);
         taille      = parseInt(document.getElementById("taille").value,10);
         nombre      = parseInt(document.getElementById("nombre").value,10);
-        alternance  = parseInt(document.getElementById("alt").value,10) * 1000;
-        
         particles.length = 0;
-
-        for(var i = 0; i < nombre; i++)
+        
+        if(mode == 1)
         {
-            particles.push(new createParticle());
+            vitesse     = parseInt(document.getElementById("vitesse").value,10);      
+            alternance  = parseInt(document.getElementById("alt").value,10) * 1000;
+
+            for(var i = 0; i < nombre; i++)
+            {
+                particles.push(new createParticle(vitesse));
+            }
         }
+        else
+        {
+            vitesseInt[0] = parseInt(document.getElementById("vitesseint1").value,10);
+            vitesseInt[1] = parseInt(document.getElementById("vitesseint2").value,10);
+            tempsInt[0] = parseInt(document.getElementById("tpsint1").value,10);
+            tempsInt[1] = parseInt(document.getElementById("tpsint2").value,10);
+            alternance  = parseInt(document.getElementById("alt2").value,10) * 1000;
+            
+            var vitesseGlobale = Math.floor(Math.random() * vitesseInt[1]) + vitesseInt[0];
+            speedAlternance = (Math.floor(Math.random() * tempsInt[1]) + tempsInt[0]) * 1000;
+            for(var j = 0; j < nombre; j++)
+            {
+                particles.push(new createParticle(vitesseGlobale));
+            }
+        }    
+        
     }
+    
     
     /**
      * Passage en plein écran
@@ -87,6 +120,27 @@
         }    
     }
     
+    function changeSpeed()
+    {
+        if(mode == 2)
+        {
+            var vitesseGlobal = Math.floor(Math.random() * vitesseInt[1]) + vitesseInt[0];
+            var p = null;
+            for(var i = 0; i < nombre; i++)
+            {
+                p = particles[i];
+                
+                if(p.vx != 0) {
+                    p.vx = (p.vx > 0) ? vitesseGlobal : -vitesseGlobal;
+                } 
+                
+                if(p.vy != 0) {
+                    p.vy = (p.vy > 0) ? vitesseGlobal : -vitesseGlobal;
+                } 
+            }
+        }
+    }
+    
     /**
      * Inverse une valeur
      * @param num Valeur à inverser
@@ -105,12 +159,17 @@
             reverseDirection();
             timeElapsed = 0;
         }
+        
+        if(speedAlternance > 0 && timeSpeedElapsed > speedAlternance) {
+            changeSpeed();
+            timeSpeedElapsed = 0;
+        }
     }
 
     /**
      * Création d'un ensemble de particule
      */
-    function createParticle()
+    function createParticle(vitesseParticle)
     {
         //Position initiale
         this.x = Math.random()*W;
@@ -119,15 +178,15 @@
         //Velocité
         if(direction == 'verticalhb') {
             this.vx = 0;
-            this.vy = vitesse;
+            this.vy = vitesseParticle;
         } else if(direction == 'verticalbh') {
             this.vx = 0;
-            this.vy = -vitesse;
+            this.vy = -vitesseParticle;
         } else if(direction == 'horizontalgd') {
-            this.vx = vitesse;
+            this.vx = vitesseParticle;
             this.vy = 0;
         } else if(direction == 'horizontaldg') {
-            this.vx = -vitesse;
+            this.vx = -vitesseParticle;
             this.vy = 0;
         }
 
@@ -142,8 +201,6 @@
         //Remplissage du canvas
         ctx.fillStyle = "black";
         ctx.fillRect(0, 0, W, H);
-        ctx.globalCompositeOperation = "source-over";
-        ctx.globalCompositeOperation = "lighter";
         checkForAlternance();
 
         for(var t = 0; t < particles.length; t++)
@@ -164,6 +221,7 @@
             if(p.y > H+10) p.y = -10;
         }
         timeElapsed += 33;
+        timeSpeedElapsed += 33;
     }
     
     setInterval(draw, 33);

@@ -1,0 +1,16 @@
+/* 
+    Document   : style
+    Created on : 12 nov. 2012, 13:13:24
+    Author     : Olivier
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+.floatedFS {
+    float:left;
+    width:400px;
+}
+
+.input-small {
+    width:30px;
+}
